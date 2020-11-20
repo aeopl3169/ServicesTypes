@@ -1,22 +1,29 @@
 package com.shiva.serviceanil;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import static java.sql.DriverManager.println;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button buttonStart, buttonStop;
-    private TextView textView;
+    private Button buttonStart, buttonStop, buttonBind, buttonUnBind, buttonGetRandomNumber;
+    private TextView textViewThreadCount;
     int count = 0;
-//        private MyAsyncTask myAsyncTask;
+
+    private MyService myService;
+    private boolean isServiceBound; // Checking service is bound or unbound.
+    // ServiceConnection will be established on click of bindService button.
+    private ServiceConnection serviceConnection;
+
     private Intent serviceIntent;
     private boolean mStopLoop;
     static final String SERVICE = "Service";
@@ -29,10 +36,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         buttonStart = (Button) findViewById(R.id.buttonStart);
         buttonStop = (Button) findViewById(R.id.buttonStop);
-        textView = (TextView) findViewById(R.id.textView);
+        buttonBind = (Button) findViewById(R.id.buttonBind);
+        buttonUnBind = (Button) findViewById(R.id.buttonUnBind);
+        buttonGetRandomNumber = (Button) findViewById(R.id.buttonRandomNumber);
+        textViewThreadCount = (TextView) findViewById(R.id.textView);
 
         buttonStart.setOnClickListener(this);
         buttonStop.setOnClickListener(this);
+        buttonBind.setOnClickListener(this);
+        buttonUnBind.setOnClickListener(this);
+        buttonGetRandomNumber.setOnClickListener(this);
 
         serviceIntent = new Intent(getApplicationContext(), MyService.class);
     }
@@ -45,11 +58,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startService(serviceIntent); // start service.
                 break;
             case R.id.buttonStop:
-//                mStopLoop = false;
                 stopService(serviceIntent); // We can stop service explicitly with stopService.
+                break;
+            case R.id.buttonBind:
+                bindService();
+                break;
+            case R.id.buttonUnBind:
+                unbindService();
+                break;
+            case R.id.buttonRandomNumber:
+                setRandomNumber();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + v.getId());
+        }
+    }
+
+    private void bindService() {
+        if (serviceConnection == null) {
+            // initializing the ServiceConnection.
+            serviceConnection = new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                    // Getting the service instance
+                    MyService.MyServiceBinder myServiceBinder = (MyService.MyServiceBinder) iBinder;
+                    myService = myServiceBinder.getService(); // Getting service instance
+                    isServiceBound = true;
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName componentName) {
+                    isServiceBound = false;
+                }
+            };
+        }
+        // binding to the service
+        // BIND_AUTO_CREATE: If the service is not created It will create the service.
+        bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void unbindService() {
+        if (isServiceBound) {
+            Log.d(SERVICE, "unbindService: Called");
+            unbindService(serviceConnection);
+            isServiceBound = false;
+        }
+    }
+
+    private void setRandomNumber() {
+        if (isServiceBound) {
+            textViewThreadCount.setText("Random number: " + myService.getRandomNumber());
+        } else {
+            textViewThreadCount.setText("Service not bound");
         }
     }
 }

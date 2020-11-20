@@ -32,7 +32,7 @@ public class MyService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Log.i(SERVICE, "onBind: ");
-        return null;
+        return mBinder;
     }
 
     // onStartCommand will execute when started a service.
