@@ -66,7 +66,7 @@ public class MyService extends Service {
                 Thread.sleep(1000);
                 if (mIsRandomGeneratorOn) {
                     mRandomNumber = new Random().nextInt(MAX) + MIN;
-                    Log.i(SERVICE, "stopRandomNumberGenerator: Thread id: " + Thread.currentThread().getId() + " Random number: " + mRandomNumber);
+                    Log.i(SERVICE, "starRandomNumberGenerator: Thread id: " + Thread.currentThread().getId() + " Random number: " + mRandomNumber);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
