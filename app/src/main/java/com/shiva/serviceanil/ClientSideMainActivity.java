@@ -122,6 +122,7 @@ public class ClientSideMainActivity extends AppCompatActivity implements View.On
         serviceIntent = new Intent();
         // Setting the component with full address(package name) of the other app.
         serviceIntent.setComponent(new ComponentName("com.shiva.a7servicesideapp", "com.shiva.a7servicesideapp.MyService"));
+        serviceIntent.setPackage(getPackageName()); //set the package name
     }
 
     @Override
