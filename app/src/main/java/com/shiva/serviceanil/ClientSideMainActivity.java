@@ -121,8 +121,12 @@ public class ClientSideMainActivity extends AppCompatActivity implements View.On
         // Initializing the intent to establish the connection.
         serviceIntent = new Intent();
         // Setting the component with full address(package name) of the other app.
-        serviceIntent.setComponent(new ComponentName("com.shiva.a7servicesideapp", "com.shiva.a7servicesideapp.MyService"));
-        serviceIntent.setPackage(getPackageName()); //set the package name
+//        serviceIntent.setComponent(new ComponentName("com.shiva.a7servicesideapp", "com.shiva.a7servicesideapp.MyService"));
+//        serviceIntent.setPackage(getPackageName()); //set the package name
+
+        // Setting the action and category which is Manifest of another app(ServiceSideApp)
+        serviceIntent.setAction("sample.action.value");
+        serviceIntent.addCategory(Intent.CATEGORY_DEFAULT);
     }
 
     @Override
