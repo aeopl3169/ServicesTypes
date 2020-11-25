@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView textViewThreadCount;
     int count = 0;
 
-    private MyService myService;
+    private MyIntentService myIntentService;
     private boolean isServiceBound; // Checking service is bound or unbound.
     // ServiceConnection will be established on click of bindService button.
     private ServiceConnection serviceConnection;
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonUnBind.setOnClickListener(this);
         buttonGetRandomNumber.setOnClickListener(this);
 
-        serviceIntent = new Intent(getApplicationContext(), MyService.class);
+        serviceIntent = new Intent(getApplicationContext(), MyIntentService.class);
     }
 
     @Override
@@ -81,8 +81,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
                     // Getting the service instance
-                    MyService.MyServiceBinder myServiceBinder = (MyService.MyServiceBinder) iBinder;
-                    myService = myServiceBinder.getService(); // Getting service instance
+                    MyIntentService.MyIntentServiceBinder myIntentServiceBinder = (MyIntentService.MyIntentServiceBinder) iBinder;
+                    myIntentService = myIntentServiceBinder.getService(); // Getting service instance
                     isServiceBound = true;
                 }
 
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setRandomNumber() {
         if (isServiceBound) {
-            textViewThreadCount.setText("Random number: " + myService.getRandomNumber());
+            textViewThreadCount.setText("Random number: " + myIntentService.getmRandomNumber());
         } else {
             textViewThreadCount.setText("Service not bound");
         }
