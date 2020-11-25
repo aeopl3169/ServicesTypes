@@ -12,6 +12,9 @@ import java.util.Random;
 import static com.shiva.serviceanil.MainActivity.SERVICE;
 
 /**
+ * Declare public modifier for IntentService class
+ * W/InputMethodManagerService: Got RemoteException sending setActive(false) notification to pid 8613 uid 10048
+ *
  * E/ThrottleService: problem during onPollAlarm: java.lang.IllegalStateException: problem parsing stats:
  * java.io.FileNotFoundException: /proc/net/xt_qtaguid/iface_stat_all: open failed: ENOENT (No such file or directory)
  */
