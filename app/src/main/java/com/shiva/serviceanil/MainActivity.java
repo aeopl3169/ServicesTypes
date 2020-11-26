@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonStart:
+                serviceIntent.putExtra("starter", "starter" + (++count));
                 MyIntentService.enqueueWork(this, serviceIntent); // To start JobIntentService
                 break;
             case R.id.buttonStop:
