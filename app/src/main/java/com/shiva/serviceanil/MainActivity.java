@@ -1,27 +1,29 @@
 package com.shiva.serviceanil;
 
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
-import android.os.Build;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button buttonStart, buttonStop;
 
-    JobScheduler jobScheduler;
+    private MyIntentService myService;
+    private boolean isServiceBound;
+    private ServiceConnection serviceConnection;
 
+    private Intent serviceIntent;
+    private boolean mStopLoop;
+
+    private static final String TAG = MainActivity.class.getSimpleName();
     static final String SERVICE = "Service";
 
-    //    @SuppressLint("NewApi")
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,49 +35,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         buttonStart.setOnClickListener(this);
         buttonStop.setOnClickListener(this);
-        // If we are running on the lower version
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        }
+
+        serviceIntent = new Intent(getApplicationContext(), MyIntentService.class);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonStart:
-                startJob();
+                mStopLoop = true;
+                /*
+                * Starting a foreground service, 1st parameter context and 2nd parameter intent.
+                * ContextCompat is androidx component.
+                * startForegroundService will check for device version, pre Oreo or post Oreo and run accordingly.
+                * */
+                ContextCompat.startForegroundService(this, serviceIntent);
                 break;
             case R.id.buttonStop:
-                stopJob();
+                stopService(serviceIntent);
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + v.getId());
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void startJob() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ComponentName componentName = new ComponentName(this, MyJobService.class);
-            JobInfo jobInfo = new JobInfo.Builder(101, componentName)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_CELLULAR)
-                    .setPeriodic(15 * 60 * 1000) // It should be greater than 15 minutes
-                    .setRequiresCharging(true)
-                    .setPersisted(true)
-                    .build();
-            if (jobScheduler.schedule(jobInfo) == JobScheduler.RESULT_SUCCESS) {
-                Log.i(SERVICE, "startJob: Thread id: " + Thread.currentThread().getId() + " job scheduled successfully.");
-            } else {
-                Log.i(SERVICE, "startJob: Thread id: " + Thread.currentThread().getId() + " job could not schedule.");
-            }
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void stopJob() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            jobScheduler.cancel(101);
         }
     }
 }

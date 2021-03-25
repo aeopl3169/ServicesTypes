@@ -2,10 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.shiva.serviceanil">
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!--  Add the permission to enable foreground service(this is not runtime permission)   -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,9 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<!--    It is recommended to add foregroundServiceType attribute    -->
         <service
-            android:name=".MyJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
+            android:name=".MyIntentService"
+            android:foregroundServiceType="dataSync" />
     </application>
 
 </manifest>
