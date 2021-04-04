@@ -33,6 +33,7 @@ class MyAppsNotificationManager {
     }
 
     public void registerNotificationChannelChannel(String channelId, String channelName, String channelDescription) {
+        // Notification Channel is required in oreo and post oreo.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT);
             notificationChannel.setDescription(channelDescription);
@@ -43,14 +44,21 @@ class MyAppsNotificationManager {
 
     public Notification getNotification(Class targetNotificationActivity, String title, int priority, boolean autoCancel, int notificationId){
         Intent intent = new Intent(context, targetNotificationActivity);
+        // PendingIntent is required to set the intent on a notification.
+        // 1st param is context
+        // 2nd param is requestCode with which we can cancel the PendingIntent
+        // 3rd param is intent
+        // 4th param is flag defines when we update the PendingIntent with new intent.
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent, 0);
 
+        // NotificationCompat.Builder 2nd parameter channelId will be ignore by lower version < Oreo 26.
+        // NotificationCompat.Builder can be used for all the SDK versions, there will be no crash.
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context,context.getString(R.string.channelId))
                 .setSmallIcon(R.drawable.ic_baseline_notification_important_24)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_icon_large))
                 .setContentTitle(title)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
+                .setContentIntent(pendingIntent) // setting the pendingIntent
                 .setChannelId("123")
                 .setAutoCancel(true);
         return builder.build();

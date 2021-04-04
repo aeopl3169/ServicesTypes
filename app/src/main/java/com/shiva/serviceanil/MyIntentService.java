@@ -29,7 +29,10 @@ public class MyIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        // To start the service user startForeground, 1st parameter is id and 2nd parameter is notification object
+        // To start the service user startForeground
+        // 1st parameter is id  of the notification for later updating the notification.
+        // 2nd parameter is notification object
+        // Note: If we don't register our service to the foreground from Oreo and above, service will be killed automatically after 1 minute.
         startForeground(1, getNotification());
         mIsRandomGeneratorOn = true;
         startRandomNumberGenerator();
