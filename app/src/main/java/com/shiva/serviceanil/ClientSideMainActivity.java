@@ -87,8 +87,10 @@ public class ClientSideMainActivity extends AppCompatActivity implements View.On
 
     private void fetchRandomNumber() {
         if (mIsBound == true) {
+            // Creating the message object (from address)
             Message requestMessage = Message.obtain(null, GET_RANDOM_NUMBER_FLAG);
             // randomNumberReceiveMessenger internally contains reference to Handler which fetches the message(random number) and set it to Activity.
+            // setting replyTo using message(requestMessage) object reference to which this app receives the message using Messenger
             requestMessage.replyTo = randomNumberReceiveMessenger;
             try {
                 randomNumberRequestMessenger.send(requestMessage); // requesting the message(random number) from other app
