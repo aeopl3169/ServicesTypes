@@ -2,7 +2,6 @@ package com.shiva.serviceanil;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -14,7 +13,7 @@ import java.util.Random;
 
 import static com.shiva.serviceanil.MainActivity.SERVICE;
 
-public class MyIntentService extends JobIntentService {
+public class JobIntentServiceClass extends JobIntentService {
 
     private int mRandomNumber;
     private boolean isThreadOn = false;
@@ -22,7 +21,7 @@ public class MyIntentService extends JobIntentService {
     private final int MAX = 100;
 
     public static void enqueueWork(Context context, Intent intent) {
-        enqueueWork(context, MyIntentService.class, 101, intent);
+        enqueueWork(context, JobIntentServiceClass.class, 101, intent);
     }
 
     // Compulsory override method. onHandleWork will be executed in the separate worker thread.
@@ -63,6 +62,11 @@ public class MyIntentService extends JobIntentService {
     @Override
     public boolean onStopCurrentWork() {
         Log.i(SERVICE, "onStopCurrentWork: Thread id: " + Thread.currentThread().getId());
+        /*
+        * If the job is killed by Android OS and later the job need to restart then return true.
+        * If we don't need to restart the job later when resources are available return false.
+        * The default value is true
+        * */
         return super.onStopCurrentWork();
     }
 

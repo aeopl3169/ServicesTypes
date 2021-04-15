@@ -1,15 +1,11 @@
 package com.shiva.serviceanil;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,7 +14,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button buttonStart, buttonStop;
     int count = 0;
 
-    private MyIntentService myIntentService;
+    private JobIntentServiceClass myIntentService;
     private boolean isServiceBound; // Checking service is bound or unbound.
     // ServiceConnection will be established on click of bindService button.
     private ServiceConnection serviceConnection;
@@ -39,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonStart.setOnClickListener(this);
         buttonStop.setOnClickListener(this);
 
-        serviceIntent = new Intent(getApplicationContext(), MyIntentService.class);
+        serviceIntent = new Intent(getApplicationContext(), JobIntentServiceClass.class);
     }
 
     @Override
@@ -47,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.buttonStart:
                 serviceIntent.putExtra("starter", "starter" + (++count));
-                MyIntentService.enqueueWork(this, serviceIntent); // To start JobIntentService
+                JobIntentServiceClass.enqueueWork(this, serviceIntent); // To start JobIntentService
                 break;
             case R.id.buttonStop:
                 stopService(serviceIntent); // We can stop service explicitly with stopService.
