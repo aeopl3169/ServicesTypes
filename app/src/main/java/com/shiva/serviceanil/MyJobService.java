@@ -23,13 +23,9 @@ public class MyJobService extends JobService {
     /**
      * By default it runs on UI thread. If you don't
      * want to block the UI thread with long running work, then we use thread.
-     * Return TRUE whenever you are running long running tasks. So when you are
-     * using a thread to do long running task, return true.
-     * Return FALSE when this job is of short duration when needs to be executed
-     * for very small time.
-     *
      * @param params
-     * @return
+     * @return Return TRUE whenever the job is long running tasks.
+     * Return FALSE when the job is of short running (very small time).
      */
     @Override
     public boolean onStartJob(JobParameters params) {
