@@ -1,8 +1,12 @@
 package com.shiva.serviceanil;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,15 +15,25 @@ import android.widget.TextView;
 
 import static java.sql.DriverManager.println;
 
+import java.util.concurrent.TimeUnit;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button buttonStart, buttonStop;
-    private TextView textView;
+    private TextView textViewthreadCount;
     int count = 0;
-//        private MyAsyncTask myAsyncTask;
     private Intent serviceIntent;
     private boolean mStopLoop;
     static final String SERVICE = "Service";
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+
+//    private MyIntentService myService;
+//    private boolean isServiceBound;
+//    private ServiceConnection serviceConnection;
+    WorkManager workManager;
+    private WorkRequest workRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +43,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         buttonStart = (Button) findViewById(R.id.buttonStart);
         buttonStop = (Button) findViewById(R.id.buttonStop);
-        textView = (TextView) findViewById(R.id.textView);
+        textViewthreadCount = (TextView) findViewById(R.id.textView);
 
         buttonStart.setOnClickListener(this);
         buttonStop.setOnClickListener(this);
 
-        serviceIntent = new Intent(getApplicationContext(), MyService.class);
+        workManager = WorkManager.getInstance(getApplicationContext());
+
+        workRequest = new PeriodicWorkRequest.Builder(RandomNumberGeneratorWorker.class, 15, TimeUnit.MINUTES).build();
     }
 
     @Override
@@ -42,11 +58,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.buttonStart:
                 mStopLoop = true;
-                startService(serviceIntent); // start service.
+                workManager.enqueue(workRequest); // start service.
                 break;
             case R.id.buttonStop:
-//                mStopLoop = false;
-                stopService(serviceIntent); // We can stop service explicitly with stopService.
+                workManager.cancelWorkById(workRequest.getId());
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + v.getId());
