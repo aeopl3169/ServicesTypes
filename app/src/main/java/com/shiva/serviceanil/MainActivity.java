@@ -1,5 +1,6 @@
 package com.shiva.serviceanil;
 
+import android.annotation.SuppressLint;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void startJob() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ComponentName componentName = new ComponentName(this, MyJobService.class);
-            JobInfo jobInfo = new JobInfo.Builder(101, componentName)
+            @SuppressLint("MissingPermission") JobInfo jobInfo = new JobInfo.Builder(101, componentName)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_CELLULAR)
                     .setPeriodic(15 * 60 * 1000) // It should be greater than 15 minutes
                     .setRequiresCharging(true)

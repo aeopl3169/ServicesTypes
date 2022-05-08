@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ServiceAnil">
-        <activity android:name=".MainActivity">
+<!--    As of Android 12, android:exported must be set; use true to make the activity available to other apps, and false otherwise.    -->
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
